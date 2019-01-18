@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, DatePicker } from 'antd';
+import { Form, Input, DatePicker, Button } from 'antd';
 import { getLeave } from '../apis/leave';
 import moment from 'moment';
 
@@ -79,7 +79,7 @@ class LeaveApplication extends Component {
               <Input placeholder="Type of Leave" />
             )}
           </FormItem>
-          <Button type="submit" />
+          <Button type="submit">Save</Button>
         </Form>
       </div>
     );
