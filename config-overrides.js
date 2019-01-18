@@ -2,15 +2,15 @@ const { injectBabelPlugin } = require('react-app-rewired');
 const rewireLess = require('react-app-rewire-less');
 const path = require('path');
 
-const addSrcAsModule = (config) => {
+const addSrcAsModule = config => {
   const newConfig = config;
-  newConfig.resolve.modules = [path.resolve(__dirname, 'src'), ...newConfig.resolve.modules ];
+  newConfig.resolve.modules = [path.resolve(__dirname, 'src'), ...newConfig.resolve.modules];
 
   return newConfig;
 };
 
 module.exports = function override(config, env) {
-  config = injectBabelPlugin(['import', { libraryName: 'antd', style: true }], config); // change importing css to less
+  config = injectBabelPlugin(['import', { libraryName: 'antd', libraryDirectory: 'es', style: 'css' }], config); // change importing css to less
   config = rewireLess.withLoaderOptions({
     modifyVars: {
       '@primary-color': '#00b9c6',
