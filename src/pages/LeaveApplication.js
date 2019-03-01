@@ -1,27 +1,31 @@
-import React, { Component } from 'react';
-import { Form, Input, DatePicker, Button } from 'antd';
-import { getLeave } from '../apis/leave';
-import moment from 'moment';
+import React, { Component } from "react";
+import { Form, Input, DatePicker, Button, Select, Upload } from "antd";
+import { getLeave } from "../apis/leave";
+import moment from "moment";
 
 const FormItem = Form.Item;
+const Option = Select.Option;
+const Dragger = Upload.Dragger;
+
 const { RangePicker } = DatePicker;
 class LeaveApplication extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      leave: {}
+      leave: {},
+      leaveTypes: []
     };
   }
 
   getNumberOfWorkingDays = () => {
     const { form } = this.props;
-    const dateRange = form.getFieldValue('dateRange');
+    const dateRange = form.getFieldValue("dateRange");
     if (!dateRange) {
       return 0;
     }
     const startDate = dateRange[0];
     const endDate = dateRange[1];
-    return endDate.diff(startDate, 'days') + 1;
+    return endDate.diff(startDate, "days") + 1;
   };
 
   componentDidMount() {
@@ -31,8 +35,16 @@ class LeaveApplication extends Component {
       }
     } = this.props;
     getLeave(id).then(response => {
-      const dateRange = [moment(response.data.startDate, 'YYYY-MM-DD'), moment(response.data.endDate, 'YYYY-MM-DD')];
+      const dateRange = [
+        moment(response.data.startDate, "YYYY-MM-DD"),
+        moment(response.data.endDate, "YYYY-MM-DD")
+      ];
       this.setState({ leave: { ...response.data, dateRange } });
+    });
+
+    const leaveTypes = ["Sick", "Visa", "Personal", "Wash Car"];
+    this.setState({
+      leaveTypes
     });
   }
 
@@ -48,7 +60,7 @@ class LeaveApplication extends Component {
   };
 
   render() {
-    const { leave } = this.state;
+    const { leave, leaveTypes } = this.state;
     const {
       form: { getFieldDecorator }
     } = this.props;
@@ -58,27 +70,60 @@ class LeaveApplication extends Component {
         <h1>Leave Application Form</h1>
         <Form onSubmit={this.handleOnSubmit}>
           <FormItem>
-            {getFieldDecorator('type', { initialValue: leave.type, rules: [{ required: true, message: 'Please select your leave type!' }] })(
-              <Input placeholder="Type of Leave" />
+            {getFieldDecorator("type", {
+              initialValue: leave.type,
+              rules: [
+                { required: true, message: "Please select your leave type!" }
+              ]
+            })(
+              <Select
+                disabled={false}
+                showSearch
+                placeholder="Select a type"
+                optionFilterProp="children"
+                onBlur={this.handleSubmit}
+                // filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {leaveTypes.map(leaveType => (
+                  <Option value={leaveType} key={leaveType}>
+                    {leaveType}
+                  </Option>
+                ))}
+              </Select>
             )}
           </FormItem>
           <FormItem>
-            {getFieldDecorator('remarks', { initialValue: leave.remarks })(
+            {getFieldDecorator("remarks", { initialValue: leave.remarks })(
               <Input placeholder="Please tell us the reason why you want to take leave. (Optional)" />
             )}
           </FormItem>
           <FormItem>
-            {getFieldDecorator('dateRange', {
+            {getFieldDecorator("dateRange", {
               initialValue: leave.dateRange,
-              rules: [{ type: 'array', required: true, message: 'Please select Start Date and End Date!' }]
+              rules: [
+                {
+                  type: "array",
+                  required: true,
+                  message: "Please select Start Date and End Date!"
+                }
+              ]
             })(<RangePicker />)}
           </FormItem>
-          <p>{numWorkingDays} Days </p>
           <FormItem>
-            {getFieldDecorator('status', { initialValue: leave.status, rules: [{ required: true, message: 'Please select your leave type!' }] })(
-              <Input placeholder="Type of Leave" />
-            )}
+            {getFieldDecorator("dateRange", {
+              initialValue: leave.dateRange,
+              rules: [
+                {
+                  type: "array",
+                  required: true,
+                  message: "Please select Start Date and End Date!"
+                }
+              ]
+            })(<Dragger name="attachments" multiple={true} />)}
           </FormItem>
+          <h3>Leave Days:</h3>
+          <p>{numWorkingDays} Days </p>
+
           <Button type="submit">Save</Button>
         </Form>
       </div>
