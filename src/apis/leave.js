@@ -7,3 +7,7 @@ const instance = axios.create({
 export const getLeave = id => {
   return instance.get(`/leaves/${id}`);
 };
+
+export const createLeave = saveObj => {
+  return 'ok';
+};

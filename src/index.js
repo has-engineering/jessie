@@ -7,12 +7,14 @@ import App from './App';
 import LeaveApplication from './pages/LeaveApplication';
 
 import './index.css';
+import LeaveApplicationList from './pages/LeaveApplicationList';
 
 ReactDOM.render(
   <Router>
     <Switch>
       <Route exact path="/" component={App} />
-      <Route path="/leaves/:id" component={LeaveApplication} />
+      <Route exact path="/leaveListing" component={LeaveApplicationList} />
+      <Route path="/leaveForm" component={LeaveApplication} />
     </Switch>
   </Router>,
   document.getElementById('root')
